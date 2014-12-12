@@ -1,7 +1,7 @@
 
 define( function( require ) {
 	var $ = require( 'jquery' ),
-		BaseScene = require( 'scullge/scenes/base' ),
+		BaseScene = require( 'pew/scenes/base' ),
 		tplHtml = require( 'text!templates/scenes/scores.html' ),
 		gaco = require( 'data/context' ),
 		rankingModel = require( 'data/ranking' ),

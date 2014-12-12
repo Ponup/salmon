@@ -2,7 +2,7 @@
 define( function( require ) {
 
 	var $ = require( 'jquery' ),
-		BaseScene = require( 'scullge/scenes/base' ),
+		BaseScene = require( 'pew/scenes/base' ),
 		tplHtml = require( 'text!templates/scenes/options.html' ),
 		gaco = require( 'data/context' ),
 		preferences = require( 'data/preferences' );

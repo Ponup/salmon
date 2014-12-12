@@ -22,6 +22,8 @@ define( function( require ) {
 		MainMenuScene = require( 'scenes/mainMenu' ),
 		GameScene = require( 'scenes/game' ),
 		GameLostScene = require( 'scenes/gameLost' ),
+		OptionsScene = require( 'scenes/options' ),
+		ScoresScene = require( 'scenes/scores' ),
 		LevelCompleteScene = require( 'scenes/levelComplete' ),
 		introScene = new IntroScene();
 
@@ -30,6 +32,8 @@ define( function( require ) {
 	context.scenesManager.add( new MainMenuScene() );
 	context.scenesManager.add( new GameScene() );
 	context.scenesManager.add( new GameLostScene() );
+	context.scenesManager.add( new OptionsScene() );
+	context.scenesManager.add( new ScoresScene() );
 	context.scenesManager.add( new LevelCompleteScene() );
 	context.scenesManager.switchTo( introScene );
 });
