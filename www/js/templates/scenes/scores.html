@@ -1,0 +1,37 @@
+
+<section id="scores">
+	<h1>Scores</h1>
+
+	<div id="table"></div>
+	
+	<ul class="actions">
+		<li id="gotoBack"><i class="arrow-left"></i></li>
+	</ul>
+</section>
+
+<script id="templateSource" type="text/x-handlebars-template">
+<table>
+	<thead>
+	<tr>
+		<th>Player</th>
+		<th>Score</th>
+		<th>Level</th>
+	</tr>
+	</thead>
+	<tbody>	
+	{{#each scores}}
+	<tr>
+		<td>{{player}}</td>
+		<td>{{score}}</td>
+		<td>{{level}}</td>
+	</tr>
+	{{else}}
+	<tr>
+		<td colspan="3">No scores yet</td>
+	</tr>
+	{{/each}}
+	</tbody>
+</table>
+</script>
+
+
