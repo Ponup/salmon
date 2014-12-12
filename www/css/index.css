@@ -487,4 +487,31 @@ ul.actions {
     bottom: 0;
     height: 50%; }
 
+/* options */
+#options .settings {
+  width: 100%;
+  position: absolute;
+  margin: auto;
+  height: 50%;
+  top: 25%;
+  left: 0%;
+  right: 0%; }
+#options .setting-on {
+  background: url("../img/items/setting_on.png") no-repeat center center; }
+#options .setting-off {
+  background: url("../img/items/setting_off.png") no-repeat center center; }
+#options dl * {
+  margin: 0 !important;
+  padding: 0 !important; }
+#options dl dt {
+  width: 48%;
+  height: 50%;
+  float: left;
+  border: 1px solid red; }
+#options dl dd {
+  float: right;
+  width: 48%;
+  height: 50%;
+  border: 1px solid green; }
+
 /*# sourceMappingURL=index.css.map */
