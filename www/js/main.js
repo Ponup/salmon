@@ -21,12 +21,16 @@ define( function( require ) {
 		IntroScene = require( 'scenes/intro' ),
 		MainMenuScene = require( 'scenes/mainMenu' ),
 		GameScene = require( 'scenes/game' ),
+		GameLostScene = require( 'scenes/gameLost' ),
+		LevelCompleteScene = require( 'scenes/levelComplete' ),
 		introScene = new IntroScene();
 
 	context.scenesManager = new ScenesManager();
 	context.scenesManager.add( introScene );
 	context.scenesManager.add( new MainMenuScene() );
 	context.scenesManager.add( new GameScene() );
+	context.scenesManager.add( new GameLostScene() );
+	context.scenesManager.add( new LevelCompleteScene() );
 	context.scenesManager.switchTo( introScene );
 });
 

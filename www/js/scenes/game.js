@@ -2,7 +2,10 @@
 define( function( require ) {
 
 	var BaseScene = require( 'pew/scenes/base' ),
-		tplHtml = require( 'text!templates/scenes/game.html' );
+		Phaser = require( 'phaser' ),
+		tplHtml = require( 'text!templates/scenes/game.html' ),
+		$ = require( 'jquery' ),
+		FishSprite = require( 'sprites/fish' );
 
 	function GameScene()
 	{
@@ -19,39 +22,29 @@ define( function( require ) {
 		document.title = 'Ponup Salmon playing...';
 		document.body.innerHTML = tplHtml;
 
-		var Phaser = require( 'phaser' ),
-			$ = require( 'jquery' );
-
-		var game = new Phaser.Game( 400, 490, Phaser.AUTO, 'gameDiv' );
+		this.game = new Phaser.Game( 400, 490, Phaser.AUTO, 'gameDiv' );
 
 		var mainState = {
 
 			preload: function() { 
-				game.stage.backgroundColor = '#6ED2E5';
-				game.load.image( 'flower', 'img/flower.png' ); 
-				game.load.spritesheet( 'fish', 'img/salmon_sprite.png', 71, 120, 7);
+				this.game.stage.backgroundColor = '#6ED2E5';
+				this.game.load.image( 'flower', 'img/flower.png' ); 
+				this.game.load.spritesheet( 'fish', 'img/salmon_sprite.png', 71, 120, 7);
 			},
 
 			create: function() { 
-				game.physics.startSystem( Phaser.Physics.ARCADE );
+				this.game.physics.startSystem( Phaser.Physics.ARCADE );
 
 				this.createPlayer();
 
-				this.cursors = game.input.keyboard.createCursorKeys();
+				this.cursors = this.game.input.keyboard.createCursorKeys();
 
 				setInterval( $.proxy( this.addRandomFlower, this ), 1200 );
 			},
 
 			createPlayer: function() {
-				this.fish = this.game.add.sprite(100, 245, 'fish' );
-				this.fish.animations.add( 'left', [ 2, 1, 0 ], 3, false );
-				this.fish.animations.add( 'idle', [ 3 ], 1, true );
-				this.fish.animations.add( 'right', [ 4, 5, 6 ], 3, false );
-				game.physics.arcade.enable( this.fish );
-				this.fish.anchor.set( 20, 44 );
-				this.fish.body.collideWorldBounds = true;
-				this.fish.body.fixedRotation = true;
-				//this.fish.body.onBeginContact.add(this.blockHit, this);
+				this.fish = new FishSprite( this.game );
+				this.game.add.existing( this.fish );
 			},
 
 			addRandomFlower: function() {
@@ -59,7 +52,7 @@ define( function( require ) {
 
 				var x = rnd.integerInRange( 20, 400 ), y = 0;
 				this.flower = flower = this.game.add.sprite( x, y, 'flower' );
-				game.physics.arcade.enable( this.flower );
+				this.game.physics.arcade.enable( this.flower );
 
 				// Add velocity to the flower to make it move left
 				flower.body.velocity.x = rnd.integerInRange(-10, 10); 
@@ -93,7 +86,7 @@ define( function( require ) {
 					this.fish.body.y += 10;
 				}
 
-				game.physics.arcade.collide( this.fish, this.flower, this.blockHit, null, this );
+				this.game.physics.arcade.collide( this.fish, this.flower, this.blockHit, null, this );
 			},
 
 			blockHit: function( fish, flower ) {
@@ -101,8 +94,8 @@ define( function( require ) {
 			}
 		};
 
-		game.state.add( 'main', mainState );  
-		game.state.start( 'main' );
+		this.game.state.add( 'main', mainState );  
+		this.game.state.start( 'main' );
 	};
 
 	return GameScene;
