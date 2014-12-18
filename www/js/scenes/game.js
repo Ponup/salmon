@@ -22,15 +22,19 @@ define( function( require ) {
 		document.title = 'Ponup Salmon playing...';
 		document.body.innerHTML = tplHtml;
 
-		this.game = new Phaser.Game( 400, 490, Phaser.AUTO, 'gameDiv' );
+		this.game = new Phaser.Game( 320, 480, Phaser.AUTO, 'gameDiv' );
 		this.rnd = new Phaser.RandomDataGenerator();
-		this.items = [];
+
 
 		var mainState = {
+			
+			bgItems: [],
+			fgItems: [],
+		
+			BOTTOM_LAYER_SPEED: .5,
 
 			preload: function() { 
-				this.game.load.image( 'flower', 'img/flower.png' ); 
-				this.game.load.image( 'background', 'img/bg/game_bg.png' ); 
+				this.preloadBackground();
 				this.game.load.image( 'stones1', 'img/props/prop_piedras_1.png' ); 
 				this.game.load.image( 'stones2', 'img/props/prop_piedras_2.png' ); 
 				this.game.load.image( 'stones3', 'img/props/prop_piedras_3.png' ); 
@@ -40,24 +44,41 @@ define( function( require ) {
 				this.game.load.spritesheet( 'fish', 'img/salmon_sprite.png', 71, 120, 7);
 			},
 
+			preloadBackground: function() {
+				this.game.load.image( 'background', 'img/bg/game_bg.png' ); 
+				this.game.load.image( 'tileBackground', 'img/bg/surface_tile.png' ); 
+				this.game.load.image( 'topBackground', 'img/bg/game_layer_vignette.png' );
+			},
+
 			create: function() {
 				this.game.physics.startSystem( Phaser.Physics.ARCADE );
+
+				this.secondsLeft = 180;
+				this.score = 0;
 
 				this.createBackground();
 				this.createPlayer();
 
 				this.cursors = this.game.input.keyboard.createCursorKeys();
 
-				setInterval( $.proxy( this.addRandomItem, this ), 1200 );
+				setInterval( $.proxy( this.addRandomItem, this ), 1000 );
 			},
 
 			createBackground: function() {
 				this.game.stage.backgroundColor = '#6ED2E5';
 				this.bg = this.game.add.tileSprite(
 					0, 0,
-					this.game.stage.width, this.game.cache.getImage( 'background' ).height,
-					'background'
-				);
+					320, 480,
+//					this.game.stage.width,
+//					this.game.stage.height,
+					//this.game.cache.getImage( 'tileBackground' ).height,
+
+					'tileBackground' );
+				this.bg.autoScroll( 0, .5 /*this.BOTTOM_LAYER_SPEED*/ );
+				this.topBackground = this.game.add.sprite( 0, 0, 'topBackground' );
+				this.topBackground.width = 320;
+				this.topBackground.height = 480;
+				this.bgItems = [];
 			},
 
 			createPlayer: function() {
@@ -65,58 +86,87 @@ define( function( require ) {
 				this.game.add.existing( this.fish );
 			},
 
-			addRandomItem: function() {
-				var x = this.rnd.integerInRange( 20, 400 ),
-					y = 0;
+			createStaticRandomItem: function() {
+				var x = this.rnd.integerInRange( -20, 420 ),
+					y = -200;
 
 				var items = [
-					'flower',
 					'chest1', 'chest2', 'chest3',
 					'stones1', 'stones2', 'stones3'
 				];
+				var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
+				console.log('randomSpriteName: ' + randomSpriteName);
 
-				var item = flower = this.game.add.sprite( x, y, items[ this.rnd.integerInRange( 0, items.length - 1 ) ] );
-				this.game.physics.arcade.collide( this.fish, item, this.blockHit, null, this );
+				var item = this.game.add.sprite( x, y, randomSpriteName );
+				item.alpha = .22;
+				item.scale.x = item.scale.y = .25;
 
+				return item;
+			},
+
+			addRandomItem: function() {
+				var x = this.rnd.integerInRange( -20, 420 ),
+					y = -200;
+
+				var items = [
+					'chest1', 'chest2', 'chest3',
+					'stones1', 'stones2', 'stones3'
+				];
+				var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
+				console.log('randomSpriteName: ' + randomSpriteName);
+
+				var item = this.game.add.sprite( x, y, randomSpriteName );
 				this.game.physics.arcade.enable( item );
 
-				// Add velocity to the flower to make it move left
-				flower.body.velocity.x = this.rnd.integerInRange(-10, 10); 
-				flower.body.velocity.y = this.rnd.integerInRange(20, 70); 
+				// Add velocity to the item to make it move left
+				item.body.velocity.y = 30; 
 
-				// Kill the flower when it's no longer visible 
-				flower.checkWorldBounds = true;
-				flower.outOfBoundsKill = true;
+				// Kill the item when it's no longer visible 
+				item.checkWorldBounds = true;
+				item.outOfBoundsKill = true;
+				item.events.onOutOfBounds.add( function( item ) {
+					item.kill();
+				//	item.destroy();
+				}, item );
+
+				this.fgItems.push( item );
+
+				this.fish.bringToTop();
 			},
 		
 			update: function() {
-				var leftOrRight = false;
-				if (this.cursors.left.isDown) {
-					leftOrRight = true;
-					this.fish.animations.play( 'left' );
-					this.fish.body.x -= 5;
-				}
-				else if (this.cursors.right.isDown) {
-					leftOrRight = true;
-					this.fish.animations.play( 'right' );
-					this.fish.body.x += 5;
-				}
-				if( false === leftOrRight ) {
-					this.fish.animations.play( 'idle' );
+				this.updateBackground();
+
+				this.secondsLeft = 180 - parseInt( this.game.time.totalElapsedSeconds() );
+
+				for( var i = 0; i < this.fgItems.length; i++ ) {
+					this.game.physics.arcade.collide( this.fish, this.fgItems[ i ], this.blockHit, null, this );
 				}
 
-				if (this.cursors.up.isDown) {
-					this.fish.body.y -= 5;
-				}
-				else if (this.cursors.down.isDown) {
-					this.fish.body.y += 10;
-				}
+				document.getElementById( 'secondsLeft' ).innerHTML = this.secondsLeft;
+				document.getElementById( 'score' ).innerHTML = this.score;
 
-//				this.items.push( item );
+				this.fish.updateState( this.cursors );
 			},
 
-			blockHit: function( fish, flower ) {
-				flower.kill();
+			updateBackground: function() {
+				this.bg.tilePosition.y += this.BOTTOM_LAYER_SPEED;
+
+				if( this.bgItems.length < 2 ) {
+					console.debug( 'Adding static random item' );
+					var item = this.createStaticRandomItem();
+					this.bgItems.push( item );
+				}
+				for( var i = 0; i < this.bgItems.length; i++ ) {
+					var item = this.bgItems[ i ];
+					item.y += this.BOTTOM_LAYER_SPEED;
+				}
+			},
+
+			blockHit: function( fish, item ) {
+					  console.debug(' hizo hit!!');
+				this.score += 1;
+				item.kill();
 			}
 		};
 

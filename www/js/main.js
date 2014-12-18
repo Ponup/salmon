@@ -16,6 +16,7 @@ require.config({
 });
 
 
+/*
 // modernizr code to check if browser support svg 
 if (!Modernizr.svg) {
     var imgs = document.getElementsByTagName('img');
@@ -28,6 +29,7 @@ if (!Modernizr.svg) {
         }
     }
 }
+*/
 
 define( function( require ) {
 	var context = require( 'data/context' ),
@@ -51,3 +53,4 @@ define( function( require ) {
 	context.scenesManager.add( new LevelCompleteScene() );
 	context.scenesManager.switchTo( introScene );
 });
+
