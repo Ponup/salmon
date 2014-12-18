@@ -37,7 +37,8 @@ define( function( require ) {
 				this.game.load.image( 'chest1', 'img/props/prop_cofre_1.png' ); 
 				this.game.load.image( 'chest2', 'img/props/prop_cofre_2.png' ); 
 				this.game.load.image( 'chest3', 'img/props/prop_cofre_3.png' ); 
-				this.game.load.spritesheet( 'fish', 'img/salmon_sprite.png', 71, 120, 7);
+				this.game.load.spritesheet( 'props', 'img/salmon_props_sprite.png', 128, 128, 30);
+				this.game.load.spritesheet( 'fish', 'img/salmon_sprite.png', 72, 120, 13);
 			},
 
 			create: function() {
