@@ -147,3 +147,37 @@ ul.actions {
 
     }
 }
+
+#game {
+    position: absolute;
+    top:0; left: 0;
+    border: 2px solid green;
+    overflow: hidden;
+    #gameDiv {
+        position: absolute;
+
+        left: 0%; right: 0%; top:0%; bottom:0%; margin:auto;
+        width: 400px; height: 490px; border: 2px solid red;
+
+    }
+    dl, dd, dt { position: absolute; padding: 0; margin: 0; display: block;}
+    dt {display: none;}
+    #gameInfo {
+        width: 100%;
+        height: 100%;
+    }
+    #secondsLeft {
+        left: 15px;
+        top: 15px;
+    }
+    #score {
+        right: 15px;
+        top: 15px;
+    }
+    #energy {
+        left: 0px ; top: 15px ; right: 15px; margin : auto;
+    }
+    #distance {
+        left: 0px ; bottom: 15px ; right: 15px; margin : auto;   
+    }
+}
