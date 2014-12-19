@@ -25,7 +25,6 @@ define( function( require ) {
 		this.game = new Phaser.Game( 320, 480, Phaser.AUTO, 'gameDiv' );
 		this.rnd = new Phaser.RandomDataGenerator();
 
-
 		var mainState = {
 			
 			bgItems: [],
@@ -41,7 +40,7 @@ define( function( require ) {
 				this.game.load.image( 'chest1', 'img/props/prop_cofre_1.png' ); 
 				this.game.load.image( 'chest2', 'img/props/prop_cofre_2.png' ); 
 				this.game.load.image( 'chest3', 'img/props/prop_cofre_3.png' ); 
-				this.game.load.spritesheet( 'props', 'img/salmon_props_sprite.png', 128, 128, 30);
+				this.game.load.spritesheet( 'staticElements', 'img/props/salmon_props_sprite.png', 128, 128, 32 );
 				this.game.load.spritesheet( 'fish', 'img/salmon_sprite.png', 72, 120, 13);
 			},
 
@@ -54,8 +53,11 @@ define( function( require ) {
 			create: function() {
 				this.game.physics.startSystem( Phaser.Physics.ARCADE );
 
+				// Game data
 				this.secondsLeft = 180;
 				this.score = 0;
+				this.distance = 0;
+				this.energy = 0;
 
 				this.createBackground();
 				this.createPlayer();
@@ -70,8 +72,6 @@ define( function( require ) {
 				this.bg = this.game.add.tileSprite(
 					0, 0,
 					320, 480,
-//					this.game.stage.width,
-//					this.game.stage.height,
 					//this.game.cache.getImage( 'tileBackground' ).height,
 
 					'tileBackground' );
@@ -88,19 +88,12 @@ define( function( require ) {
 			},
 
 			createStaticRandomItem: function() {
-				var x = this.rnd.integerInRange( -20, 420 ),
-					y = -200;
+				var x = this.rnd.integerInRange( -64, this.game.stage.width - 64 ),
+					y = this.rnd.integerInRange( -64, -512 ),
+					item = this.game.add.sprite( x, y, 'staticElements', this.rnd.integerInRange( 0, 32 ) );
 
-				var items = [
-					'chest1', 'chest2', 'chest3',
-					'stones1', 'stones2', 'stones3'
-				];
-				var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
-				console.log('randomSpriteName: ' + randomSpriteName);
-
-				var item = this.game.add.sprite( x, y, randomSpriteName );
-				item.alpha = .22;
-				item.scale.x = item.scale.y = .25;
+				item.alpha = .35;
+				item.scale.x = item.scale.y = .8;
 
 				return item;
 			},
@@ -114,13 +107,12 @@ define( function( require ) {
 					'stones1', 'stones2', 'stones3'
 				];
 				var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
-				console.log('randomSpriteName: ' + randomSpriteName);
 
 				var item = this.game.add.sprite( x, y, randomSpriteName );
 				this.game.physics.arcade.enable( item );
 
 				// Add velocity to the item to make it move left
-				item.body.velocity.y = 30; 
+				item.body.velocity.y = 60; 
 
 				// Kill the item when it's no longer visible 
 				item.checkWorldBounds = true;
@@ -151,10 +143,10 @@ define( function( require ) {
 			},
 
 			updateBackground: function() {
+				var self = this;
 				this.bg.tilePosition.y += this.BOTTOM_LAYER_SPEED;
 
-				if( this.bgItems.length < 2 ) {
-					console.debug( 'Adding static random item' );
+				if( this.bgItems.length < 5 ) {
 					var item = this.createStaticRandomItem();
 					this.bgItems.push( item );
 				}
@@ -162,10 +154,17 @@ define( function( require ) {
 					var item = this.bgItems[ i ];
 					item.y += this.BOTTOM_LAYER_SPEED;
 				}
+				this.bgItems = this.bgItems.filter( function( sprite ) {
+					if( sprite.y > 480 ) { // self.game.stage.height
+						sprite.kill();
+						sprite.destroy();
+						return false;
+					}
+					return true;
+				} );
 			},
 
 			blockHit: function( fish, item ) {
-					  console.debug(' hizo hit!!');
 				this.score += 1;
 				item.kill();
 			}
