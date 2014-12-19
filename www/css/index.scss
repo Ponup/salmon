@@ -41,14 +41,21 @@ body {
     text-align:center;
     width:100%;
     @include text-shadow();
+    background: #fff ;
+
 }
 
 section {
+    background: url('../img/menu/menu_bg.png') center center no-repeat;
+    background-size: cover;
+    
     position: absolute;
     max-width: 1080px;
     max-height: 720px;
     margin:auto;
     left: 0%; right: 0%; top: 0%; bottom: 0%;
+    @include border-radius(10px);
+
 }
 
 /* typo */
@@ -71,7 +78,6 @@ ul.actions {
     position: absolute;
     left: 0%; right: 0%; bottom: 0;
     width: 100%; 
-    border: 1px solid red;
     margin:auto;
     li{
         width:33%; 
@@ -86,8 +92,7 @@ ul.actions {
 
 /* menu */
 #menu {
-    background: url('../img/menu/menu_bg.png') center center no-repeat;
-    background-size: cover;
+    
     position: absolute;
     top:0; left: 0;
     header, footer { 
@@ -116,7 +121,7 @@ ul.actions {
 
 /* options */
 #options {
-
+    
     .settings {
         width: 100%;
         position: absolute;
@@ -136,28 +141,27 @@ ul.actions {
             width: 48%;
             height: 50%;
             float: left;
-            border:1px solid red;
         }
         dd {
             float: right;
             width: 48%;
             height: 50%;
-            border:1px solid green;
         }
 
     }
 }
 
 #game {
+    
     position: absolute;
     top:0; left: 0;
-    border: 2px solid green;
     overflow: hidden;
     #gameDiv {
         position: absolute;
 
         left: 0%; right: 0%; top:0%; bottom:0%; margin:auto;
-        width: 400px; height: 490px; border: 2px solid red;
+        width: 320px; height: 480px; border: 2px solid black;
+        @include box-shadow();
 
     }
     dl, dd, dt { position: absolute; padding: 0; margin: 0; display: block;}
