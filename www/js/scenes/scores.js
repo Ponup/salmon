@@ -29,7 +29,9 @@ define( function( require ) {
 
 		document.getElementById( 'table' ).innerHTML = template( templateVariables );
 
-		$( document.getElementById( 'scores' ) ).on( 'click', '#gotoBack', function() {
+		
+		var $scores = $( document.getElementById( 'scores' ) );
+		$scores.on( 'click', '#backButton', function() {
 			gaco.scenesManager.switchTo( 'mainMenu' );
 		});
 	};

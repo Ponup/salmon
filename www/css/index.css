@@ -385,6 +385,9 @@ th {
   align-items: center;
   justify-content: center; }
 
+/*********************
+BREAKPOINTS
+*********************/
 * {
   -webkit-tap-highlight-color: transparent;
   /* make transparent link selection, adjust last value opacity 0 to 1.0 */ }
@@ -432,6 +435,14 @@ section {
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding;
   background-clip: padding-box; }
+  @media (max-width: 37.5em) {
+    section {
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      border-radius: 0;
+      -webkit-background-clip: padding-box;
+      -moz-background-clip: padding;
+      background-clip: padding-box; } }
 
 /* typo */
 a {
@@ -518,6 +529,25 @@ ul.actions {
   width: 48%;
   height: 50%; }
 
+#scores table, #scores #table {
+  width: 100%; }
+#scores td {
+  width: 32%; }
+#scores tr {
+  height: 15%; }
+#scores th {
+  font-size: 1.3em;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.4);
+  -webkit-text-shadow: none 2px 2px rgba(0, 0, 0, 0.1);
+  -moz-text-shadow: none 2px 2px rgba(0, 0, 0, 0.1);
+  -ms-text-shadow: none 2px 2px rgba(0, 0, 0, 0.1);
+  /* IE 10+ */
+  -o-text-shadow: none 2px 2px rgba(0, 0, 0, 0.1);
+  text-shadow: none 2px 2px rgba(0, 0, 0, 0.1);
+  height: 100px;
+  font-weight: normal; }
+
 #game {
   position: absolute;
   top: 0;
@@ -540,7 +570,8 @@ ul.actions {
     position: absolute;
     padding: 0;
     margin: 0;
-    display: block; }
+    display: block;
+    font-size: 1.1em; }
   #game dt {
     display: none; }
   #game #gameInfo {
