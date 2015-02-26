@@ -15,42 +15,24 @@ require.config({
 	urlArgs: 'bust=' + Date.now()
 });
 
-
-/*
-// modernizr code to check if browser support svg 
-if (!Modernizr.svg) {
-    var imgs = document.getElementsByTagName('img');
-    var svgExtension = /.*\.svg$/
-    var l = imgs.length;
-    for(var i = 0; i < l; i++) {
-        if(imgs[i].src.match(svgExtension)) {
-            imgs[i].src = imgs[i].src.slice(0, -3) + 'png';
-            console.log(imgs[i].src);
-        }
-    }
-}
-*/
-
 define( function( require ) {
 	var context = require( 'data/context' ),
-		ScenesManager = require( 'pew/scenes/manager' ),
-		IntroScene = require( 'scenes/intro' ),
-		MainMenuScene = require( 'scenes/mainMenu' ),
-		GameScene = require( 'scenes/game' ),
-		GameLostScene = require( 'scenes/gameLost' ),
-		OptionsScene = require( 'scenes/options' ),
-		ScoresScene = require( 'scenes/scores' ),
-		LevelCompleteScene = require( 'scenes/levelComplete' ),
-		introScene = new IntroScene();
+		Phaser = require( 'phaser' ),
+		MainMenuState = require( 'states/mainMenu' ),
+		GameLoopState = require( 'states/gameLoop' ),
+		GameOverState = require( 'states/gameOver' ),
+		ScoresState = require( 'states/scores' ),
+		OptionsState = require( 'states/options' ),
+		LevelCompleteState = require( 'states/levelComplete' );
+		
+	context.game = new Phaser.Game( 320, 480, Phaser.AUTO, 'gameDiv' );
 
-	context.scenesManager = new ScenesManager();
-	context.scenesManager.add( introScene );
-	context.scenesManager.add( new MainMenuScene() );
-	context.scenesManager.add( new GameScene() );
-	context.scenesManager.add( new GameLostScene() );
-	context.scenesManager.add( new OptionsScene() );
-	context.scenesManager.add( new ScoresScene() );
-	context.scenesManager.add( new LevelCompleteScene() );
-	context.scenesManager.switchTo( introScene );
+	context.game.state.add( 'mainMenu', MainMenuState, true );
+	context.game.state.add( 'gameLoop', GameLoopState, true );
+	context.game.state.add( 'gameOver', GameOverState, true );
+	context.game.state.add( 'levelComplete', LevelCompleteState, true );
+	context.game.state.add( 'options', OptionsState, true );
+	context.game.state.add( 'scores', ScoresState, true );
+	context.game.state.start( 'mainMenu' );
 });
 
