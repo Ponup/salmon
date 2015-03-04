@@ -1,5 +1,5 @@
 platforms
 plugins
 .DS_Store
-/nbproject/private/nbproject
 www/css/.sass-cache
+nbproject

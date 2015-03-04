@@ -57,10 +57,21 @@ define( function( require ) {
 
 		this.createBackground();
 		this.createPlayer();
+		this.createHud();
 
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 
 		this.game.time.events.loop( Phaser.Timer.SECOND, this.addRandomItem, this );
+	};
+	
+	GameLoopState.prototype.createHud = function() {
+		var game = this.game;
+		var style = { font: "30px Arial", fill: "#ffffff", align: "center" };
+		this.secondsText = game.add.text( 0, 10, this.secondsLeft, style);
+		this.scoreText = game.add.text( 200, 10, this.score, style);
+		this.scoreText.anchor.set(0.5);
+		this.distanceText = game.add.text( 0, 200, this.distance + 'm', style);
+		this.energyText = game.add.text( 200, 200, this.energy + '%', style);
 	};
 
 	GameLoopState.prototype.createBackground = function() {
@@ -126,6 +137,7 @@ define( function( require ) {
 	};
 
 	GameLoopState.prototype.update = function() {
+		var game = this.game;
 		this.updateBackground();
 
 		this.secondsLeft = this.INITIAL_SECONDS_LEFT - this.gameTimer.seconds.toFixed( 0 );
@@ -133,11 +145,6 @@ define( function( require ) {
 		for( var i = 0; i < this.fgItems.length; i++ ) {
 			this.game.physics.arcade.collide( this.fish, this.fgItems[ i ], this.blockHit, null, this );
 		}
-
-		//document.getElementById( 'secondsLeft' ).innerHTML = this.secondsLeft;
-		//document.getElementById( 'score' ).innerHTML = this.score;
-		//document.getElementById( 'distance' ).innerHTML = this.distance + 'm';
-		//document.getElementById( 'energy' ).innerHTML = this.energy + '%';
 
 		if( this.secondsLeft === 0 ) {
 			this.startMode = this.NEW_GAME;
@@ -150,6 +157,11 @@ define( function( require ) {
 			this.game.state.start( 'levelComplete' );
 			return;
 		}
+		
+		this.secondsText.text = this.secondsLeft;
+		this.scoreText.text = this.score;
+		this.distanceText.text = this.distance + 'm';
+		this.energyText.text = this.energy + '%';
 
 		this.fish.updateState( this.cursors );
 	};
