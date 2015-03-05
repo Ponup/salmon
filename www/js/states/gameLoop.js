@@ -29,6 +29,11 @@ define( function( require ) {
 		this.game.load.image( 'chest1', 'img/props/prop_cofre_1.png' ); 
 		this.game.load.image( 'chest2', 'img/props/prop_cofre_2.png' ); 
 		this.game.load.image( 'chest3', 'img/props/prop_cofre_3.png' ); 
+
+		// Virtual keys
+		this.game.load.image( 'left_arrow', 'img/buttons/left-arrow.png' ); 
+		this.game.load.image( 'right_arrow', 'img/buttons/right-arrow.png' ); 
+
 		this.game.load.spritesheet( 'staticElements', 'img/props/salmon_props_sprite.png', 128, 128, 32 );
 		this.game.load.spritesheet( 'fish', 'img/salmon_sprite.png', 72, 120, 13);
 	};
@@ -58,6 +63,7 @@ define( function( require ) {
 		this.createBackground();
 		this.createPlayer();
 		this.createHud();
+		this.createButtons();
 
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -80,7 +86,6 @@ define( function( require ) {
 			0, 0,
 			320, 480,
 			//this.game.cache.getImage( 'tileBackground' ).height,
-
 			'tileBackground' );
 		this.bg.autoScroll( 0, .5 /*this.BOTTOM_LAYER_SPEED*/ );
 		this.topBackground = this.game.add.sprite( 0, 0, 'topBackground' );
@@ -92,6 +97,19 @@ define( function( require ) {
 	GameLoopState.prototype.createPlayer = function() {
 		this.fish = new FishSprite( this.game );
 		this.game.add.existing( this.fish );
+	};
+	
+	GameLoopState.prototype.createButtons = function() {
+		var self = this;
+		var y = 400;
+		var item = this.game.add.sprite( 0, y, 'left_arrow' );
+		item.inputEnabled = true;
+		item.events.onInputDown.add( function() { self.cursors.left.isDown = true; } );
+		item.events.onInputUp.add( function() { self.cursors.left.isDown = false; } );
+		var item = this.game.add.sprite( 200, y, 'right_arrow' );		
+		item.inputEnabled = true;
+		item.events.onInputDown.add( function() { self.cursors.right.isDown = true; } );
+		item.events.onInputUp.add( function() { self.cursors.right.isDown = false; } );
 	};
 
 	GameLoopState.prototype.createStaticRandomItem = function() {

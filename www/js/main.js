@@ -25,14 +25,21 @@ define( function( require ) {
 		OptionsState = require( 'states/options' ),
 		LevelCompleteState = require( 'states/levelComplete' );
 		
-	context.game = new Phaser.Game( 320, 480, Phaser.AUTO, 'gameDiv' );
-
-	context.game.state.add( 'mainMenu', MainMenuState, true );
-	context.game.state.add( 'gameLoop', GameLoopState, true );
-	context.game.state.add( 'gameOver', GameOverState, true );
-	context.game.state.add( 'levelComplete', LevelCompleteState, true );
-	context.game.state.add( 'options', OptionsState, true );
-	context.game.state.add( 'scores', ScoresState, true );
-	context.game.state.start( 'mainMenu' );
+	var preload = function() {
+		context.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+		context.game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
+	},
+	create = function() {
+		context.game.scale.startFullScreen(true);
+		context.game.state.add( 'mainMenu', MainMenuState, true );
+		context.game.state.add( 'gameLoop', GameLoopState, true );
+		context.game.state.add( 'gameOver', GameOverState, true );
+		context.game.state.add( 'levelComplete', LevelCompleteState, true );
+		context.game.state.add( 'options', OptionsState, true );
+		context.game.state.add( 'scores', ScoresState, true );
+		context.game.state.start( 'mainMenu' );
+	};
+		
+	context.game = new Phaser.Game( 320, 480, Phaser.AUTO, 'gameDiv', { preload: preload, create: create } );
 });
 
