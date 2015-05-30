@@ -3,3 +3,4 @@ plugins
 .DS_Store
 www/css/.sass-cache
 nbproject
+*.apk

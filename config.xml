@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.ponup.salmon" version="0.8.0">
-    <name>Salmon</name>
-    <description>Salmon is an arcade game which features a fish and lot of obstacles.</description>
-    <author email="salmon@ponup.com" href="http://ponup.com">Ponup</author>
-    <content src="index.html"/>
-    <access origin="*"/>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.ponup.salmon" version="0.8.1">
+	<name>Salmon</name>
+	<description>Salmon is an arcade game which features a fish and lot of obstacles.</description>
+	<author email="salmon@ponup.com" href="http://ponup.com/salmon.html">Ponup Games</author>
+	<content src="index.html"/>
+	<access origin="*"/>
+	<splash src="res/splash-screen.png"/>
+	<icon src="res/icon.png"/>
+	<platform name="android">
+		<icon src="res/android/drawable-mdpi/ic_launcher.png" density="mdpi"/>
+		<icon src="res/android/drawable-hdpi/ic_launcher.png" density="hdpi"/>
+		<icon src="res/android/drawable-xhdpi/ic_launcher.png" density="xhdpi"/>
+		<icon src="res/android/drawable-xxhdpi/ic_launcher.png" density="xxhdpi"/>
+		<icon src="res/android/drawable-xxxhdpi/ic_launcher.png" density="xxxhdpi"/>
+	</platform>
 </widget>
