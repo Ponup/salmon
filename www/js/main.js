@@ -2,7 +2,7 @@
 require.config({
 	baseUrl: 'js/',
 	paths: {
-		jquery: 'jquery-1.11.1.min',
+		jquery: '../bower_components/jquery/dist/jquery.min',
 		underscore: 'underscore-min',
 		handlebars: 'handlebars-v2.0.0',
 		phaser: 'phaser.min',
@@ -18,6 +18,7 @@ require.config({
 
 define( function( require ) {
 	var context = require( 'data/context' ),
+		PonupApi = require( 'ponupapi' ),
 		Phaser = require( 'phaser' ),
 		MainMenuState = require( 'states/mainMenu' ),
 		GameLoopState = require( 'states/gameLoop' ),
@@ -40,7 +41,21 @@ define( function( require ) {
 		context.game.state.add( 'scores', ScoresState, true );
 		context.game.state.start( 'mainMenu' );
 	};
-		
-	context.game = new Phaser.Game( 320, 480, Phaser.AUTO, 'gameDiv', { preload: preload, create: create } );
+
+	context.ponupApi = new PonupApi();
+	// context.ponupApi.setBaseUrl( 'http://localhost:8080' );
+	
+	document.addEventListener( 'deviceready', function() {	
+
+		context.game = new Phaser.Game( 320, 480, Phaser.AUTO, 'gameDiv', { preload: preload, create: create } );
+
+		document.addEventListener( 'backbutton', function() {
+			if( 'mainMenu' === context.game.state.current )
+				navigator.app.exitApp();
+			else
+				context.game.state.start( 'mainMenu' );
+		}, false );
+
+	});
 });
 

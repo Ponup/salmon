@@ -3,7 +3,6 @@ define( function( require ) {
 	'use strict';
 
 	var context = require( 'data/context' ),
-		PonupApi = require( 'ponupapi' ),
 		text = null;
 
 	function GameLostState()
@@ -34,7 +33,7 @@ define( function( require ) {
 		text.strokeThickness = 6;
 		text.fill = '#43d637';
 
-		PonupApi.saveScore( 'salmon', {
+		context.ponupApi.saveScore( 'salmon', {
 			'game_level_number': context.level,
 			'player_name': 'Anonymous',
 			'value': context.score

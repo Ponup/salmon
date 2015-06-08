@@ -72,7 +72,9 @@ define( function( require ) {
 
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 
-		this.game.time.events.loop( Phaser.Timer.SECOND, this.addRandomItem, this );
+		this.game.time.events.loop( Phaser.Timer.SECOND * 3, this.addRandomItem, this );
+		this.game.time.events.loop( Phaser.Timer.SECOND * 2, function() { this.distance += 0.5; }, this );
+		this.game.time.events.loop( Phaser.Timer.SECOND, function() { this.energy--; }, this );
 	};
 	
 	GameLoopState.prototype.createHud = function() {
@@ -128,9 +130,6 @@ define( function( require ) {
 	};
 
 	GameLoopState.prototype.addRandomItem = function() {
-
-		this.distance += 0.5;
-
 		var x = this.rnd.integerInRange( -20, 270 ),
 			y = -50;
 
@@ -140,8 +139,9 @@ define( function( require ) {
 			'worm'
 		];
 		var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
+		var imageInfo = this.game.cache.getImage( randomSpriteName );
 
-		var item = this.game.add.sprite( x, y, randomSpriteName );
+		var item = this.game.add.sprite( x, -imageInfo.height, randomSpriteName );
 		this.game.physics.arcade.enable( item );
 		item.body.velocity.y = 60; 
 

@@ -4,8 +4,7 @@ define( function( require ) {
 
 	var context = require( 'data/context' ),
 		gaco = require( 'data/context' ),
-		preferences = require( 'data/preferences' ),
-		PonupApi = require( 'ponupapi' );
+		preferences = require( 'data/preferences' );
 
 	function ScoresState()
 	{
@@ -47,12 +46,12 @@ define( function( require ) {
 		var scoreFontStyle = { font: "12px Arial", fill: "#000000", align: "center" };
 
 		var yPos = 160;
-		PonupApi.retrieveScores( 'salmon', 10, function( scores ) {
+		context.ponupApi.retrieveScores( 'salmon', 10, function( scores ) {
 			for( var i = 0; i < scores.length; i++ ) {
 				var score = scores[ i ];
 				self.game.add.text( columns[0], yPos, score['player_name'], scoreFontStyle );
 				self.game.add.text( columns[1], yPos, score['value'], scoreFontStyle );
-				self.game.add.text( columns[2], yPos, score['registration_time'], scoreFontStyle );
+				self.game.add.text( columns[2], yPos, score['registration_time']['date'], scoreFontStyle );
 				yPos += 30;
 			}
 			
