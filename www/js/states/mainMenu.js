@@ -34,10 +34,11 @@ define( function( require ) {
 		playText.inputEnabled = true;
 		playText.events.onInputDown.add( function() { this.game.state.start( 'gameLoop' ); }, this ); 
 
-		var scoresText = this.game.add.text( 10, this.game.world.height * .8, 'Scores' );
+		var menuY = this.game.world.height * .85;
+		var scoresText = this.game.add.text( 30, menuY, 'Scores' );
 		scoresText.inputEnabled = true;
 		scoresText.events.onInputDown.add( function() { this.game.state.start( 'scores' ); }, this );
-		var optionsText = this.game.add.text( 100, this.game.world.height * .9, 'Options' );
+		var optionsText = this.game.add.text( 170, menuY, 'Options' );
 		optionsText.inputEnabled = true;
 		optionsText.events.onInputDown.add( function() { this.game.state.start( 'options' ); }, this );
 		

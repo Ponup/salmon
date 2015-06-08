@@ -5,7 +5,8 @@ require.config({
 		jquery: 'jquery-1.11.1.min',
 		underscore: 'underscore-min',
 		handlebars: 'handlebars-v2.0.0',
-		phaser: 'phaser.min'
+		phaser: 'phaser.min',
+		ponupapi: '../bower_components/ponup-api-js/api'
 	},
         shim: {
         	'phaser': {

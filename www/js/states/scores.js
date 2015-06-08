@@ -4,8 +4,8 @@ define( function( require ) {
 
 	var context = require( 'data/context' ),
 		gaco = require( 'data/context' ),
-		rankingModel = require( 'data/ranking' ),
-		preferences = require( 'data/preferences' );
+		preferences = require( 'data/preferences' ),
+		PonupApi = require( 'ponupapi' );
 
 	function ScoresState()
 	{
@@ -20,21 +20,22 @@ define( function( require ) {
 	ScoresState.prototype.create = function() {
 		document.title = 'Salmon :: Scores';
 
+		var self = this;
 		this.game = context.game;
 
 		this.bg = this.game.add.tileSprite( 0, 0, this.game.world.width, this.game.world.height, 'bg' );
 
 		var headerFontStyle = { font: "65px Arial", fill: "#ff0044", align: "center" },
-			playText = this.game.add.text( this.game.world.centerX, 100, 'Scores', headerFontStyle );
-		playText.anchor.setTo( .5 );
-		playText.anchor.set(0.5);
-		playText.align = 'center';
+			headerText = this.game.add.text( this.game.world.centerX, 100, 'Scores', headerFontStyle );
+		headerText.anchor.setTo( .5 );
+		headerText.anchor.set(0.5);
+		headerText.align = 'center';
 
-		playText.font = 'Arial Black';
-		playText.fontSize = 50;
-		playText.fontWeight = 'bold';
+		headerText.font = 'Arial Black';
+		headerText.fontSize = 50;
+		headerText.fontWeight = 'bold';
 
-		playText.strokeThickness = 6;
+		headerText.strokeThickness = 6;
 
 		var columns = [ 10, 130, 250 ],
 			tableFontStyle = { font: "20px Arial", fill: "#ff0044", align: "center" };
@@ -42,18 +43,22 @@ define( function( require ) {
 		this.game.add.text( columns[1], 130, 'Score', tableFontStyle );
 		this.game.add.text( columns[2], 130, 'Date', tableFontStyle );
 
-		var yPos = 150,
-			scores = rankingModel.getScores();
-		// Mock data scores = [{player:"santi",score:14,date:"31/13/31"},{player:"santi",score:14,date:"31/13/31"},{player:"santi",score:14,date:"31/13/31"}];
-		for( var i = 0; i < scores.length; i++ ) {
-			this.game.add.text( columns[0], yPos, scores[ i ]['player'] );
-			this.game.add.text( columns[1], yPos, scores[ i ]['score'] );
-			this.game.add.text( columns[2], yPos, scores[ i ]['date'] );
-			yPos += 30;
-		}
-		
-		this.bg.inputEnabled = true;
-		this.bg.events.onInputDown.add( function() { this.game.state.start( 'mainMenu' ); }, this ); 
+
+		var scoreFontStyle = { font: "12px Arial", fill: "#000000", align: "center" };
+
+		var yPos = 160;
+		PonupApi.retrieveScores( 'salmon', 10, function( scores ) {
+			for( var i = 0; i < scores.length; i++ ) {
+				var score = scores[ i ];
+				self.game.add.text( columns[0], yPos, score['player_name'], scoreFontStyle );
+				self.game.add.text( columns[1], yPos, score['value'], scoreFontStyle );
+				self.game.add.text( columns[2], yPos, score['registration_time'], scoreFontStyle );
+				yPos += 30;
+			}
+			
+			self.bg.inputEnabled = true;
+			self.bg.events.onInputDown.add( function() { self.game.state.start( 'mainMenu' ); }, self); 
+		} );
 	};
 
 	ScoresState.prototype.update = function() {

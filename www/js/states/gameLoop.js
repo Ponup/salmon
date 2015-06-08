@@ -4,12 +4,14 @@ define( function( require ) {
 
 	var Phaser = require( 'phaser' ),
 		$ = require( 'jquery' ),
+		context = require( 'data/context' ),
 		FishSprite = require( 'sprites/fish' );
 
 	function GameLoopState()
 	{
 		this.NEW_GAME = 0;
 		this.NEW_LEVEL = 1;
+
 		this.startMode = this.NEW_GAME;
 
 		this.rnd = new Phaser.RandomDataGenerator();
@@ -23,6 +25,7 @@ define( function( require ) {
 
 	GameLoopState.prototype.preload = function() { 
 		this.preloadBackground();
+		this.game.load.image( 'worm', 'img/worm.png' );
 		this.game.load.image( 'stones1', 'img/props/prop_piedras_1.png' ); 
 		this.game.load.image( 'stones2', 'img/props/prop_piedras_2.png' ); 
 		this.game.load.image( 'stones3', 'img/props/prop_piedras_3.png' ); 
@@ -53,8 +56,10 @@ define( function( require ) {
 		this.energy = 100;
 		if( this.NEW_GAME === this.startMode ) {
 			this.score = 0;
+			this.level = 1;
 		}
 		else {
+			this.level++;
 		}
 
 		this.gameTimer = this.game.time.create( false );
@@ -72,12 +77,11 @@ define( function( require ) {
 	
 	GameLoopState.prototype.createHud = function() {
 		var game = this.game;
-		var style = { font: "30px Arial", fill: "#ffffff", align: "center" };
-		this.secondsText = game.add.text( 0, 10, this.secondsLeft, style);
-		this.scoreText = game.add.text( 200, 10, this.score, style);
-		this.scoreText.anchor.set(0.5);
-		this.distanceText = game.add.text( 0, 200, this.distance + 'm', style);
-		this.energyText = game.add.text( 200, 200, this.energy + '%', style);
+		var style = { font: "20px Arial", fill: "#ffffff", align: "center" };
+		this.secondsText = game.add.text( 5, 10, this.secondsLeft, style);
+		this.scoreText = game.add.text( 100, 10, this.score, style);
+		this.distanceText = game.add.text( 185, 10, this.distance + 'm', style);
+		this.energyText = game.add.text( 250, 10, this.energy + '%', style);
 	};
 
 	GameLoopState.prototype.createBackground = function() {
@@ -124,21 +128,21 @@ define( function( require ) {
 	};
 
 	GameLoopState.prototype.addRandomItem = function() {
-		var x = this.rnd.integerInRange( -20, 420 ),
-			y = -200;
-
-		var items = [
-			'chest1', 'chest2', 'chest3',
-			'stones1', 'stones2', 'stones3'
-		];
-		var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
 
 		this.distance += 0.5;
 
+		var x = this.rnd.integerInRange( -20, 270 ),
+			y = -50;
+
+		var items = [
+			'chest1', 'chest2', 'chest3',
+			'stones1', 'stones2', 'stones3',
+			'worm'
+		];
+		var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
+
 		var item = this.game.add.sprite( x, y, randomSpriteName );
 		this.game.physics.arcade.enable( item );
-
-		// Add velocity to the item to make it move left
 		item.body.velocity.y = 60; 
 
 		// Kill the item when it's no longer visible 
@@ -156,7 +160,6 @@ define( function( require ) {
 
 	GameLoopState.prototype.update = function() {
 		var game = this.game;
-		this.updateBackground();
 
 		this.secondsLeft = this.INITIAL_SECONDS_LEFT - this.gameTimer.seconds.toFixed( 0 );
 
@@ -164,9 +167,16 @@ define( function( require ) {
 			this.game.physics.arcade.collide( this.fish, this.fgItems[ i ], this.blockHit, null, this );
 		}
 
+		context.score = this.score;
+		context.level = this.level;
+
 		if( this.secondsLeft === 0 ) {
 			this.startMode = this.NEW_GAME;
 			// this.game.time.events.remove( this.timer );
+			this.game.state.start( 'gameOver' );
+			return;
+		}
+		if( this.energy < 0 ) {
 			this.game.state.start( 'gameOver' );
 			return;
 		}
@@ -182,6 +192,12 @@ define( function( require ) {
 		this.energyText.text = this.energy + '%';
 
 		this.fish.updateState( this.cursors );
+	};
+
+	GameLoopState.prototype.render = function() {
+		this.updateBackground();
+		//this.game.debug.spriteBounds(sprite);
+		//this.game.debug.spriteCorners(sprite, true, true);
 	};
 
 	GameLoopState.prototype.updateBackground = function() {
@@ -208,16 +224,16 @@ define( function( require ) {
 
 	GameLoopState.prototype.blockHit = function( fish, item ) {
 		if( item.key === 'chest1' ) {
-			this.score += 10;;
-			item.kill();
+			this.score += 10;
+			this.energy -= 10;
 		}
 		if( item.key === 'chest2' ) {
-			this.score += 15;;
-			item.kill();
+			this.score += 15;
+			this.energy -= 15;
 		}
 		if( item.key === 'chest3' ) {
-			this.score += 30;;
-			item.kill();
+			this.score += 30;
+			this.energy -= 30;
 		}
 		if( item.key === 'stones1' ) {
 			this.energy -= 5;
@@ -228,6 +244,11 @@ define( function( require ) {
 		if( item.key === 'stones3' ) {
 			this.energy -= 20;
 		}
+		if( item.key == 'worm' ) {
+			this.energy += 15;
+		}
+		item.kill();
+		this.energy = Math.min( this.energy, 100 );
 	};
 
 	return GameLoopState;

@@ -11,10 +11,10 @@ define( function( require ) {
 	}
 
 	LevelCompleteState.prototype.create = function() {
-		game = context.game;
-		game.stage.setBackgroundColor(0x2d2d2d);
+		var self = this;
+		this.game.stage.setBackgroundColor(0x2d2d2d);
 
-		text = game.add.text(game.world.centerX, game.world.centerY, 'Level complete' );
+		text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Level complete' );
 
 		//	Center align
 		text.anchor.set(0.5);
@@ -30,7 +30,7 @@ define( function( require ) {
 		text.strokeThickness = 6;
 		text.fill = '#43d637';
 
-		setTimeout( function() { context.game.state.start( 'gameLoop' ); }, 2000 );
+		setTimeout( function() { self.game.state.start( 'gameLoop' ); }, 2000 );
 	};
 
 	LevelCompleteState.prototype.update = function() {

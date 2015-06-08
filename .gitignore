@@ -4,3 +4,4 @@ plugins
 www/css/.sass-cache
 nbproject
 *.apk
+www/bower_components
