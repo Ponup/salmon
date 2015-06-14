@@ -2,36 +2,30 @@
 define( function( require ) {
 	'use strict';
 
-	var context = require( 'data/context' ),
-		text = null;
+	var context = require( 'data/context' );
 
-	function GameLostState()
-	{
+	function GameLostState() {
 	}
 
 	GameLostState.prototype.create = function() {
-		this.game.stage.setBackgroundColor(0x2d2d2d);
+		this.game.stage.setBackgroundColor( 0x2d2d2d );
 
 		this.bg = this.game.add.tileSprite( 0, 0, this.game.world.width, this.game.world.height, 'bg' );
 		this.bg.inputEnabled = true;
 		this.bg.events.onInputDown.add( function() { this.game.state.start( 'mainMenu' ); }, this ); 
 
+		this.headerSprite = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Game over' );
 
-		text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Game over' );
+		this.headerSprite.anchor.set(0.5);
+		this.headerSprite.align = 'center';
 
-		//	Center align
-		text.anchor.set(0.5);
-		text.align = 'center';
+		this.headerSprite.font = 'Arial Black';
+		this.headerSprite.fontSize = 50;
+		this.headerSprite.fontWeight = 'bold';
 
-		//	Font style
-		text.font = 'Arial Black';
-		text.fontSize = 50;
-		text.fontWeight = 'bold';
-
-		//	Stroke color and thickness
-		text.stroke = '#000000';
-		text.strokeThickness = 6;
-		text.fill = '#43d637';
+		this.headerSprite.stroke = '#000000';
+		this.headerSprite.strokeThickness = 6;
+		this.headerSprite.fill = '#43d637';
 
 		context.ponupApi.saveScore( 'salmon', {
 			'game_level_number': context.level,
@@ -41,7 +35,7 @@ define( function( require ) {
 	};
 
 	GameLostState.prototype.update = function() {
-		text.angle += 0.05;
+		this.headerSprite.angle += 0.05;
 	};
 
 	return GameLostState;
