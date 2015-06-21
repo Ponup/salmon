@@ -3,6 +3,10 @@
 	<name>Salmon</name>
 	<description>Salmon is an arcade game which features a fish and lot of obstacles.</description>
 	<author email="salmon@ponup.com" href="http://ponup.com/salmon.html">Ponup Games</author>
+	<preference name="Fullscreen" value="false"/>
+	<preference name="Orientation" value="portrait"/>
+	<preference name="SplashScreenDelay" value="2000"/>
+	<preference name="DisallowOverscroll" value="true"/>
 	<content src="index.html"/>
 	<access origin="*"/>
 	<splash src="res/splash-screen.png"/>

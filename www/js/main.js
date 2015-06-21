@@ -28,8 +28,9 @@ define( function( require ) {
 		LevelCompleteState = require( 'states/levelComplete' );
 		
 	var preload = function() {
+		context.game.scale.pageAlignHorizontally = true;
+		context.game.scale.pageAlignVertically = true;  
 		context.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-		context.game.scale.fullScreenScaleMode = Phaser.ScaleManager.EXACT_FIT;
 	},
 	create = function() {
 		context.game.scale.startFullScreen(true);
