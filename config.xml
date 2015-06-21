@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.ponup.salmon" version="0.8.9">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.ponup.salmon" version="0.9.0">
 	<name>Salmon</name>
 	<description>Salmon is an arcade game which features a fish and lot of obstacles.</description>
 	<author email="salmon@ponup.com" href="http://ponup.com/salmon.html">Ponup Games</author>

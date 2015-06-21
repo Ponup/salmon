@@ -5,7 +5,8 @@ define( function( require ) {
 	var Phaser = require( 'phaser' ),
 		$ = require( 'jquery' ),
 		context = require( 'data/context' ),
-		FishSprite = require( 'sprites/fish' );
+		FishSprite = require( 'sprites/fish' ),
+		WormSprite = require( 'sprites/worm' );
 
 	function GameLoopState()
 	{
@@ -30,7 +31,6 @@ define( function( require ) {
 		this.game.load.image( 'stones2', 'img/props/prop_piedras_2.png' ); 
 		this.game.load.image( 'stones3', 'img/props/prop_piedras_3.png' ); 
 		this.game.load.image( 'chest1', 'img/props/prop_cofre_1.png' ); 
-		this.game.load.image( 'chest2', 'img/props/prop_cofre_2.png' ); 
 		this.game.load.image( 'chest3', 'img/props/prop_cofre_3.png' ); 
 
 		// Virtual keys
@@ -134,17 +134,23 @@ define( function( require ) {
 			y = -50;
 
 		var items = [
-			'chest1', 'chest2', 'chest3',
+			'chest1', 'chest3',
 			'stones1', 'stones2', 'stones3',
 			'worm'
 		];
 		var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
 		var imageInfo = this.game.cache.getImage( randomSpriteName );
 
-		var item = this.game.add.sprite( x, -imageInfo.height, randomSpriteName );
-		this.game.physics.arcade.enable( item );
-		item.body.velocity.y = 60; 
-
+		var item = null;
+		if( 'worm' === randomSpriteName ) {
+			item = new WormSprite( this.game, x, -imageInfo.height );
+			this.game.add.existing( item );
+		}
+		else {
+			item = this.game.add.sprite( x, -imageInfo.height, randomSpriteName );
+			this.game.physics.arcade.enable( item );
+			item.body.velocity.y = 60; 
+		}
 		// Kill the item when it's no longer visible 
 		item.checkWorldBounds = true;
 		item.outOfBoundsKill = true;
@@ -227,10 +233,6 @@ define( function( require ) {
 			this.score += 10;
 			this.energy -= 10;
 		}
-		if( item.key === 'chest2' ) {
-			this.score += 15;
-			this.energy -= 15;
-		}
 		if( item.key === 'chest3' ) {
 			this.score += 30;
 			this.energy -= 30;
@@ -244,7 +246,7 @@ define( function( require ) {
 		if( item.key === 'stones3' ) {
 			this.energy -= 20;
 		}
-		if( item.key == 'worm' ) {
+		if( item instanceof WormSprite ) {
 			this.energy += 15;
 		}
 		item.kill();

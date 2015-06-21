@@ -2,9 +2,7 @@
 define( function( require ) {
 	'use strict';
 
-	var BaseScene = require( 'pew/scenes/base' ),
-		context = require( 'data/context' ),
-		text = null;
+	var text = null;
 
 	function LevelCompleteState()
 	{
@@ -35,7 +33,6 @@ define( function( require ) {
 
 	LevelCompleteState.prototype.update = function() {
 		text.angle += 0.05;
-//		text.scale += 0.5;
 	};
 
 	return LevelCompleteState;

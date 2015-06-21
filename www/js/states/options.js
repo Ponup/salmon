@@ -3,12 +3,11 @@ define( function( require ) {
 	'use strict';
 
 	var context = require( 'data/context' ),
-		gaco = require( 'data/context' ),
 		preferences = require( 'data/preferences' );
 
-	function OptionsState()
+	function OptionsState( game )
 	{
-		this.game = context.game;
+		this.game = game;
 	}
 
 	OptionsState.prototype.preload = function() {
@@ -20,8 +19,6 @@ define( function( require ) {
 
 	OptionsState.prototype.create = function() {
 		document.title = 'Salmon :: Options';
-
-		this.game = context.game;
 
 		this.bg = this.game.add.tileSprite( 0, 0, this.game.world.width, this.game.world.height, 'bg' );
 
@@ -61,11 +58,6 @@ define( function( require ) {
 	OptionsState.prototype.toggleMusicButton = function() {
 		this.musicButton.frame = this.musicButton.frame === 1 ? 0 : 1;
 		preferences.setBooleanProperty( 'musicEnabled', this.musicButton.frame === 1 );
-	};
-
-	OptionsState.prototype.update = function() {
-		// text.angle += 0.05;
-
 	};
 
 	return OptionsState;
