@@ -1,21 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.ponup.salmon" version="0.9.0">
-	<name>Salmon</name>
-	<description>Salmon is an arcade game which features a fish and lot of obstacles.</description>
-	<author email="salmon@ponup.com" href="http://ponup.com/salmon.html">Ponup Games</author>
-	<preference name="Fullscreen" value="false"/>
-	<preference name="Orientation" value="portrait"/>
-	<preference name="SplashScreenDelay" value="2000"/>
-	<preference name="DisallowOverscroll" value="true"/>
-	<content src="index.html"/>
-	<access origin="*"/>
-	<splash src="res/splash-screen.png"/>
-	<icon src="res/icon.png"/>
-	<platform name="android">
-		<icon src="res/android/drawable-mdpi/ic_launcher.png" density="mdpi"/>
-		<icon src="res/android/drawable-hdpi/ic_launcher.png" density="hdpi"/>
-		<icon src="res/android/drawable-xhdpi/ic_launcher.png" density="xhdpi"/>
-		<icon src="res/android/drawable-xxhdpi/ic_launcher.png" density="xxhdpi"/>
-		<icon src="res/android/drawable-xxxhdpi/ic_launcher.png" density="xxxhdpi"/>
-	</platform>
+<?xml version='1.0' encoding='utf-8'?>
+<widget android-versionCode="9002" id="com.ponup.salmon" version="0.9.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Salmon</name>
+    <description>Salmon is an arcade game which features a fish and lot of obstacles.</description>
+    <author email="salmon@ponup.com" href="http://ponup.com/salmon.html">Ponup Games</author>
+    <preference name="Fullscreen" value="false" />
+    <preference name="Orientation" value="portrait" />
+    <preference name="SplashScreenDelay" value="2000" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="android-manifest/@android:installLocation" value="auto" />
+    <content src="index.html" />
+    <access origin="*" />
+    <splash src="res/splash-screen.png" />
+    <icon src="res/mipmap-xxhdpi/ic_launcher.png" />
+    <platform name="android">
+        <hook src="hooks/remove-permissions.js" type="after_prepare" />
+        <icon density="mdpi" src="res/mipmap-mdpi/ic_launcher.png" />
+        <icon density="hdpi" src="res/mipmap-hdpi/ic_launcher.png" />
+        <icon density="xhdpi" src="res/mipmap-xhdpi/ic_launcher.png" />
+        <icon density="xxhdpi" src="res/mipmap-xxhdpi/ic_launcher.png" />
+        <icon density="xxxhdpi" src="res/mipmap-xxxhdpi/ic_launcher.png" />
+    </platform>
+    <engine name="android" spec="~5.2.1" />
+    <engine name="browser" spec="~4.1.0" />
+    <plugin name="cordova-plugin-x-socialsharing" spec="~5.1.1" />
+    <plugin name="cordova-plugin-whitelist" spec="~1.2.2" />
+    <plugin name="cordova-plugin-device" spec="~1.1.2" />
+    <plugin name="cordova-plugin-media" spec="~2.3.0" />
+    <plugin name="cordova-plugin-file" spec="~4.2.0" />
 </widget>

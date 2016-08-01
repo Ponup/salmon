@@ -3,9 +3,9 @@ require.config({
 	baseUrl: 'js/',
 	paths: {
 		jquery: '../bower_components/jquery/dist/jquery.min',
-		underscore: 'underscore-min',
+		underscore: '../bower_components/underscore/underscore-min',
 		handlebars: 'handlebars-v2.0.0',
-		phaser: 'phaser.min',
+		phaser: '../bower_components/phaser/build/phaser.min',
 		ponupapi: '../bower_components/ponup-api-js/api'
 	},
         shim: {
