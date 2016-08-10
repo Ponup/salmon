@@ -6,3 +6,4 @@ nbproject
 *.apk
 www/bower_components
 *.keystore
+build.json

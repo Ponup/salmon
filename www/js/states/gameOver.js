@@ -6,6 +6,10 @@ define( function( require ) {
 
 	function GameLostState() {
 	}
+    
+	GameLostState.prototype.init = function(gameData) {
+        this.gameData = gameData;
+    };
 
 	GameLostState.prototype.create = function() {
 		this.game.stage.setBackgroundColor( 0x2d2d2d );
@@ -28,9 +32,9 @@ define( function( require ) {
 		this.headerSprite.fill = '#43d637';
 
 		context.ponupApi.saveScore( 'salmon', {
-			'game_level_number': context.level,
+			'game_level_number': this.gameData.level,
 			'player_name': 'Anonymous',
-			'value': context.score
+			'value': this.gameData.score
 		});
 	};
 

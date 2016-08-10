@@ -4,25 +4,32 @@ define( function( require ) {
 
 	var Phaser = require( 'phaser' ),
 		$ = require( 'jquery' ),
-		context = require( 'data/context' ),
 		FishSprite = require( 'sprites/fish' ),
 		WormSprite = require( 'sprites/worm' );
 
 	function GameLoopState()
 	{
-		this.NEW_GAME = 0;
-		this.NEW_LEVEL = 1;
-
-		this.startMode = this.NEW_GAME;
-
 		this.rnd = new Phaser.RandomDataGenerator();
 			
 		this.bgItems = [];
 		this.fgItems = [];
 		
-		this.BOTTOM_LAYER_SPEED = .5;
+		this.BOTTOM_LAYER_SPEED = 0.5;
 		this.INITIAL_SECONDS_LEFT = 60;
+        
+        this.hud = null;
 	}
+
+    GameLoopState.prototype.init = function(args) {
+        var defaults = {
+            score: 0,
+            level: 0,
+        };
+        var fullArgs = args || defaults;
+        this.score = fullArgs.score;
+        this.level = fullArgs.level + 1;
+        this.numWormsPickedUp = 0;
+    };
 
 	GameLoopState.prototype.preload = function() { 
 		this.preloadBackground();
@@ -32,6 +39,8 @@ define( function( require ) {
 		this.game.load.image( 'stones3', 'img/props/prop_piedras_3.png' ); 
 		this.game.load.image( 'chest1', 'img/props/prop_cofre_1.png' ); 
 		this.game.load.image( 'chest3', 'img/props/prop_cofre_3.png' ); 
+		
+        this.game.load.image( 'stopwatch', 'img/stopwatch.png' ); 
 
 		// Virtual keys
 		this.game.load.image( 'left_arrow', 'img/buttons/left-arrow.png' ); 
@@ -54,13 +63,6 @@ define( function( require ) {
 		this.secondsLeft = this.INITIAL_SECONDS_LEFT;
 		this.distance = 0;
 		this.energy = 100;
-		if( this.NEW_GAME === this.startMode ) {
-			this.score = 0;
-			this.level = 1;
-		}
-		else {
-			this.level++;
-		}
 
 		this.gameTimer = this.game.time.create( false );
 		this.gameTimer.start();
@@ -72,9 +74,10 @@ define( function( require ) {
 
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 
-		this.game.time.events.loop( Phaser.Timer.SECOND * 3, this.addRandomItem, this );
-		this.game.time.events.loop( Phaser.Timer.SECOND * 2, function() { this.distance += 0.5; }, this );
-		this.game.time.events.loop( Phaser.Timer.SECOND, function() { this.energy--; }, this );
+		this.t1 = this.game.time.events.loop( Phaser.Timer.SECOND * 5 - (this.level * 1000), this.addRandomItem, this );
+		this.t2 = this.game.time.events.loop( Phaser.Timer.SECOND * 3 + (this.level * 100), this.addWormItem, this );
+		this.t3 = this.game.time.events.loop( Phaser.Timer.SECOND * 2, function() { this.distance += 0.5; }, this );
+		this.t4 = this.game.time.events.loop( Phaser.Timer.SECOND + (this.level * 200), function() { this.energy--; }, this );
 	};
 	
 	GameLoopState.prototype.createHud = function() {
@@ -84,6 +87,12 @@ define( function( require ) {
 		this.scoreText = game.add.text( 100, 10, this.score, style);
 		this.distanceText = game.add.text( 185, 10, this.distance + 'm', style);
 		this.energyText = game.add.text( 250, 10, this.energy + '%', style);
+
+        this.hud = game.add.group();
+        this.hud.add(this.secondsText);
+        this.hud.add(this.scoreText);
+        this.hud.add(this.distanceText);
+        this.hud.add(this.energyText);
 	};
 
 	GameLoopState.prototype.createBackground = function() {
@@ -93,7 +102,7 @@ define( function( require ) {
 			320, 480,
 			//this.game.cache.getImage( 'tileBackground' ).height,
 			'tileBackground' );
-		this.bg.autoScroll( 0, .5 /*this.BOTTOM_LAYER_SPEED*/ );
+		this.bg.autoScroll( 0, 0.5 /*this.BOTTOM_LAYER_SPEED*/ );
 		this.topBackground = this.game.add.sprite( 0, 0, 'topBackground' );
 		this.topBackground.width = 320;
 		this.topBackground.height = 480;
@@ -112,7 +121,7 @@ define( function( require ) {
 		item.inputEnabled = true;
 		item.events.onInputDown.add( function() { self.cursors.left.isDown = true; } );
 		item.events.onInputUp.add( function() { self.cursors.left.isDown = false; } );
-		var item = this.game.add.sprite( 200, y, 'right_arrow' );		
+		item = this.game.add.sprite( 200, y, 'right_arrow' );		
 		item.inputEnabled = true;
 		item.events.onInputDown.add( function() { self.cursors.right.isDown = true; } );
 		item.events.onInputUp.add( function() { self.cursors.right.isDown = false; } );
@@ -123,34 +132,44 @@ define( function( require ) {
 			y = this.rnd.integerInRange( -64, -512 ),
 			item = this.game.add.sprite( x, y, 'staticElements', this.rnd.integerInRange( 0, 32 ) );
 
-		item.alpha = .35;
-		item.scale.x = item.scale.y = .8;
+		item.alpha = 0.35;
+		item.scale.x = item.scale.y = 0.8;
 
 		return item;
 	};
 
-	GameLoopState.prototype.addRandomItem = function() {
-		var x = this.rnd.integerInRange( -20, 270 ),
-			y = -50;
+    GameLoopState.prototype.addWormItem = function() {
+        this.addFgItem({type: 'worm', sprite: 'worm'});
+    };
 
+	GameLoopState.prototype.addRandomItem = function() {
 		var items = [
-			'chest1', 'chest3',
-			'stones1', 'stones2', 'stones3',
-			'worm'
+            { type: 'chest', sprite: 'chest1' },
+            { type: 'chest', sprite: 'chest3' },
+            { type: 'stone', sprite: 'stones1' },
+            { type: 'stone', sprite: 'stones2' },
+            { type: 'stone', sprite: 'stones3' },
 		];
 		var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
-		var imageInfo = this.game.cache.getImage( randomSpriteName );
+        this.addFgItem(randomSpriteName);
+    };
+
+    GameLoopState.prototype.addFgItem = function(randomSpriteName) {
+		var x = this.rnd.integerInRange( -20, 270 );
+
+		var imageInfo = this.game.cache.getImage( randomSpriteName.sprite );
 
 		var item = null;
-		if( 'worm' === randomSpriteName ) {
+		if( 'worm' === randomSpriteName.type ) {
 			item = new WormSprite( this.game, x, -imageInfo.height );
 			this.game.add.existing( item );
 		}
 		else {
-			item = this.game.add.sprite( x, -imageInfo.height, randomSpriteName );
-			this.game.physics.arcade.enable( item );
-			item.body.velocity.y = 60; 
+			item = this.game.add.sprite( x, -imageInfo.height, randomSpriteName.sprite );
+//			this.game.physics.arcade.enable( item );
+//			item.body.velocity.y = 60; 
 		}
+        item.objectType = randomSpriteName.type;
 		// Kill the item when it's no longer visible 
 		item.checkWorldBounds = true;
 		item.outOfBoundsKill = true;
@@ -162,6 +181,7 @@ define( function( require ) {
 		this.fgItems.push( item );
 
 		this.fish.bringToTop();
+        this.game.world.bringToTop(this.hud);
 	};
 
 	GameLoopState.prototype.update = function() {
@@ -170,32 +190,41 @@ define( function( require ) {
 		this.secondsLeft = this.INITIAL_SECONDS_LEFT - this.gameTimer.seconds.toFixed( 0 );
 
 		for( var i = 0; i < this.fgItems.length; i++ ) {
-			this.game.physics.arcade.collide( this.fish, this.fgItems[ i ], this.blockHit, null, this );
+//			this.game.physics.arcade.collide( this.fish, this.fgItems[ i ], this.blockHit, null, this );
+			var item = this.fgItems[i];
+            item.y++;
+			this.blockHit(this.fish, item);
 		}
 
-		context.score = this.score;
-		context.level = this.level;
+        var gameData = { score: this.score, level: this.level };
 
-		if( this.secondsLeft === 0 ) {
-			this.startMode = this.NEW_GAME;
-			// this.game.time.events.remove( this.timer );
-			this.game.state.start( 'gameOver' );
+		if( this.distance === 15 || this.numWormsPickedUp >= 10) {
+            this.destroyAllItems();
+			this.game.state.start('levelComplete', true, false, gameData);
 			return;
 		}
-		if( this.energy < 0 ) {
-			this.game.state.start( 'gameOver' );
-			return;
-		}
-		if( this.distance === 20 ) {
-			this.startMode = this.NEW_LEVEL;
-			this.game.state.start( 'levelComplete' );
+
+		if( this.energy < 0 || this.secondsLeft === 0) {
+            this.destroyAllItems();
+			this.game.state.start('gameOver', true, false, gameData);
 			return;
 		}
 		
 		this.secondsText.text = this.secondsLeft;
+        var secondsColor = null;
+        if(this.secondsLeft < 10) {
+            secondsColor = '#FF6347';
+        } else if(this.secondsLeft  < 25) {
+            secondsColor = '#FFA500';
+        } else {
+            secondsColor = '#FFFFFF';
+        }
+        this.secondsText.addColor(secondsColor, 0);
 		this.scoreText.text = this.score;
 		this.distanceText.text = this.distance + 'm';
+        this.distanceText.addStrokeColor(this.distance > 10 ? '#000000' : '#ffffff' , 0);
 		this.energyText.text = this.energy + '%';
+        this.energyText.addColor(this.energy < 50 ? '#ff0000' : '#ffffff' , 0);
 
 		this.fish.updateState( this.cursors );
 	};
@@ -208,14 +237,15 @@ define( function( require ) {
 
 	GameLoopState.prototype.updateBackground = function() {
 		var self = this;
+        var item = null;
 		this.bg.tilePosition.y += this.BOTTOM_LAYER_SPEED;
 
 		if( this.bgItems.length < 5 ) {
-			var item = this.createStaticRandomItem();
+			item = this.createStaticRandomItem();
 			this.bgItems.push( item );
 		}
 		for( var i = 0; i < this.bgItems.length; i++ ) {
-			var item = this.bgItems[ i ];
+			item = this.bgItems[ i ];
 			item.y += this.BOTTOM_LAYER_SPEED;
 		}
 		this.bgItems = this.bgItems.filter( function( sprite ) {
@@ -228,13 +258,26 @@ define( function( require ) {
 		} );
 	};
 
+	GameLoopState.prototype.destroyAllItems = function() {
+        this.fgItems.forEach(function(item) {
+            item.kill();
+            item.destroy();
+        });
+        this.fgItems = [];
+        this.game.time.events.remove(this.t1);
+        this.game.time.events.remove(this.t2);
+        this.game.time.events.remove(this.t3);
+        this.game.time.events.remove(this.t4);
+    };
 	GameLoopState.prototype.blockHit = function( fish, item ) {
+        if(!Phaser.Rectangle.intersects(fish.getBounds(), item.getBounds()) || item.hitted) {
+            return;
+        }
+        item.hitted = true;
 		if( item.key === 'chest1' ) {
-			this.score += 10;
-			this.energy -= 10;
+			this.energy -= 15;
 		}
 		if( item.key === 'chest3' ) {
-			this.score += 30;
 			this.energy -= 30;
 		}
 		if( item.key === 'stones1' ) {
@@ -247,10 +290,19 @@ define( function( require ) {
 			this.energy -= 20;
 		}
 		if( item instanceof WormSprite ) {
-			this.energy += 15;
+			this.score += 1;
+			this.energy += 10;
 		}
-		item.kill();
+
 		this.energy = Math.min( this.energy, 100 );
+
+		if(item.objectType === 'worm') {
+            this.numWormsPickedUp++;
+		    item.kill();
+        } else {
+            this.game.camera.shake(0.02, 200);
+        }
+
 	};
 
 	return GameLoopState;

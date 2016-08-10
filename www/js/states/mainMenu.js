@@ -38,7 +38,7 @@ define( function( require ) {
 			return;
 		}
 
-		var shareText = this.game.add.text( 140, this.game.world.height * .8, 'Share' );
+		var shareText = this.game.add.text( 140, this.game.world.height * 0.8, 'Share' );
 		shareText.inputEnabled = true;
 		shareText.events.onInputDown.add( function() { 
 			window.plugins.socialsharing.share( 'Play the @Ponup Salmon game for free in your phone. More info http://ponup.com', '@Ponup Salmon' );
@@ -63,20 +63,20 @@ define( function( require ) {
 
 	MainMenuState.prototype.addLogo = function() {
 		var logo = this.game.add.sprite( this.game.world.centerX, this.game.world.height >> 2, 'logo' );
-		logo.anchor.setTo( .5 );
+		logo.anchor.setTo( 0.5 );
 	};
 
 	MainMenuState.prototype.addPlayText = function() {
 		var playText = this.game.add.text( this.game.world.centerX, this.game.world.centerY + 100, 'Play',  { font: "bold 50px Arial", fill: "#ff0044", align: "center" });
-		playText.anchor.setTo( .5 );
+		playText.anchor.setTo( 0.5 );
 		playText.anchor.set(0.5);
 		playText.inputEnabled = true;
 		playText.strokeThickness = 6;
-		playText.events.onInputDown.add( function() { this.game.state.start( 'gameLoop' ); }, this ); 
+		playText.events.onInputDown.add( function() { this.game.state.start('gameLoop'); }, this ); 
 	};
 
 	MainMenuState.prototype.addSecondaryOptions = function() {
-		var menuY = this.game.world.height * .85;
+		var menuY = this.game.world.height * 0.85;
 		var scoresText = this.game.add.text( 30, menuY, 'Scores' );
 		scoresText.inputEnabled = true;
 		scoresText.events.onInputDown.add( function() { this.game.state.start( 'scores' ); }, this );

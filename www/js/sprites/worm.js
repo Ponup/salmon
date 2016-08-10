@@ -6,9 +6,9 @@ define( function( require ) {
 	function WormSprite( game, x, y )
 	{
 		Phaser.Sprite.call( this, game, x, y, 'worm' );
-		game.physics.arcade.enable( this );
+//		game.physics.arcade.enable( this );
 	
-		this.body.velocity.y = 40; 
+//		this.body.velocity.y = 40; 
 		this.originalx = x;
 		this.tick = 0;
 	}
@@ -20,7 +20,8 @@ define( function( require ) {
 	{
 		var deg = this.tick++ % 360,
 			rad =  deg / 180 * Math.PI;
-		this.body.position.x = this.originalx + ( Math.sin( rad ) * 40 );
+		this.position.x = this.originalx + ( Math.sin( rad ) * 40 );
+		this.position.y++;
 	};
 
 	return WormSprite;
