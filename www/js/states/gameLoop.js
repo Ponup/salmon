@@ -1,11 +1,11 @@
-
 define( function( require ) {
-	'use strict';
+'use strict';
 
 	var Phaser = require( 'phaser' ),
 		$ = require( 'jquery' ),
 		FishSprite = require( 'sprites/fish' ),
-		WormSprite = require( 'sprites/worm' );
+		WormSprite = require( 'sprites/worm' ),
+		Chest1Sprite = require( 'sprites/chest1' );
 
 	function GameLoopState()
 	{
@@ -74,7 +74,7 @@ define( function( require ) {
 
 		this.cursors = this.game.input.keyboard.createCursorKeys();
 
-		this.t1 = this.game.time.events.loop( Phaser.Timer.SECOND * 5 - (this.level * 1000), this.addRandomItem, this );
+		this.t1 = this.game.time.events.loop( Phaser.Timer.SECOND * 5 - (this.level * 300), this.addRandomItem, this );
 		this.t2 = this.game.time.events.loop( Phaser.Timer.SECOND * 3 + (this.level * 100), this.addWormItem, this );
 		this.t3 = this.game.time.events.loop( Phaser.Timer.SECOND * 2, function() { this.distance += 0.5; }, this );
 		this.t4 = this.game.time.events.loop( Phaser.Timer.SECOND + (this.level * 200), function() { this.energy--; }, this );
@@ -139,37 +139,33 @@ define( function( require ) {
 	};
 
     GameLoopState.prototype.addWormItem = function() {
-        this.addFgItem({type: 'worm', sprite: 'worm'});
+		var item = new WormSprite( this.game, 0, 0);
+        this.addFgItem(item);
     };
 
 	GameLoopState.prototype.addRandomItem = function() {
 		var items = [
-            { type: 'chest', sprite: 'chest1' },
+            Chest1Sprite
+            /*{ type: 'chest', sprite: 'chest1' },/*
+
             { type: 'chest', sprite: 'chest3' },
             { type: 'stone', sprite: 'stones1' },
             { type: 'stone', sprite: 'stones2' },
-            { type: 'stone', sprite: 'stones3' },
+            { type: 'stone', sprite: 'stones3' },*/
 		];
-		var randomSpriteName = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
-        this.addFgItem(randomSpriteName);
+		var randomItemType = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
+        var item = new randomItemType(this.game, 0, 0);
+        this.addFgItem(item);
     };
 
-    GameLoopState.prototype.addFgItem = function(randomSpriteName) {
+    GameLoopState.prototype.addFgItem = function(item) {
 		var x = this.rnd.integerInRange( -20, 270 );
 
-		var imageInfo = this.game.cache.getImage( randomSpriteName.sprite );
+		var imageInfo = this.game.cache.getImage( item.key );
+        item.x = item.originalx = x;
+        item.y = -imageInfo.height;
 
-		var item = null;
-		if( 'worm' === randomSpriteName.type ) {
-			item = new WormSprite( this.game, x, -imageInfo.height );
-			this.game.add.existing( item );
-		}
-		else {
-			item = this.game.add.sprite( x, -imageInfo.height, randomSpriteName.sprite );
-//			this.game.physics.arcade.enable( item );
-//			item.body.velocity.y = 60; 
-		}
-        item.objectType = randomSpriteName.type;
+		this.game.add.existing( item );
 		// Kill the item when it's no longer visible 
 		item.checkWorldBounds = true;
 		item.outOfBoundsKill = true;
@@ -190,7 +186,6 @@ define( function( require ) {
 		this.secondsLeft = this.INITIAL_SECONDS_LEFT - this.gameTimer.seconds.toFixed( 0 );
 
 		for( var i = 0; i < this.fgItems.length; i++ ) {
-//			this.game.physics.arcade.collide( this.fish, this.fgItems[ i ], this.blockHit, null, this );
 			var item = this.fgItems[i];
             item.y++;
 			this.blockHit(this.fish, item);
@@ -231,6 +226,7 @@ define( function( require ) {
 
 	GameLoopState.prototype.render = function() {
 		this.updateBackground();
+        this.game.debug.bodyInfo(this.fish, 32, 32);
 		//this.game.debug.spriteBounds(sprite);
 		//this.game.debug.spriteCorners(sprite, true, true);
 	};
@@ -269,10 +265,25 @@ define( function( require ) {
         this.game.time.events.remove(this.t3);
         this.game.time.events.remove(this.t4);
     };
-	GameLoopState.prototype.blockHit = function( fish, item ) {
-        if(!Phaser.Rectangle.intersects(fish.getBounds(), item.getBounds()) || item.hitted) {
-            return;
+
+    GameLoopState.prototype.poliContainsFishPoints = function(area, points) {
+        for(var i =0 ;i < points.length;i ++) {
+                var point = points[i];
+                if(area.contains(point[0], point[1])) return true;
         }
+        return false;
+    };
+
+	GameLoopState.prototype.blockHit = function( fish, item ) {
+        if(item.hitted) return;
+
+        if(item.absoluteBodyPoints && !this.poliContainsFishPoints(item.absoluteBodyPolygon, fish.absoluteBodyPoints)) {
+            return false;
+        }
+        if(!item.absoluteBodyPoints && !Phaser.Rectangle.intersects(fish.getBounds(), item.getBounds())) {
+            return false;
+        }
+
         item.hitted = true;
 		if( item.key === 'chest1' ) {
 			this.energy -= 15;
@@ -292,17 +303,13 @@ define( function( require ) {
 		if( item instanceof WormSprite ) {
 			this.score += 1;
 			this.energy += 10;
-		}
-
-		this.energy = Math.min( this.energy, 100 );
-
-		if(item.objectType === 'worm') {
             this.numWormsPickedUp++;
 		    item.kill();
-        } else {
+		} else {
             this.game.camera.shake(0.02, 200);
         }
 
+		this.energy = Math.min( this.energy, 100 );
 	};
 
 	return GameLoopState;

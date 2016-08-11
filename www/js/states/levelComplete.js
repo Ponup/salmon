@@ -36,7 +36,6 @@ define( function( require ) {
 	};
 
 	LevelCompleteState.prototype.update = function() {
-		text.angle += 0.05;
 	};
 
 	return LevelCompleteState;

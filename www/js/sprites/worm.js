@@ -1,4 +1,3 @@
-
 define( function( require ) {
 
 	var Phaser = require( 'phaser' );
@@ -6,9 +5,7 @@ define( function( require ) {
 	function WormSprite( game, x, y )
 	{
 		Phaser.Sprite.call( this, game, x, y, 'worm' );
-//		game.physics.arcade.enable( this );
 	
-//		this.body.velocity.y = 40; 
 		this.originalx = x;
 		this.tick = 0;
 	}
