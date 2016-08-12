@@ -21,6 +21,8 @@ define(function(require) {
             [ 0, 58 ],
         ];
         this.bodyPolygon = new Phaser.Polygon(this.relativeBodyPoints);
+        this.speed = 1;
+        this.speedX = 0;
 	}
 
 	Chest1Sprite.prototype = Object.create( Phaser.Sprite.prototype );
@@ -28,18 +30,8 @@ define(function(require) {
 
 	Chest1Sprite.prototype.update = function() {
         var self = this;
-		this.position.y++;
-
-        if(this.graphics) {
-            this.graphics.x = this.x;
-            this.graphics.y = this.y;
-        } else {
-            this.graphics = this.game.add.graphics(this.x, this.y);
-            this.graphics.lineStyle(4, 0xff0000, 1);
-            //    graphics.beginFill(0xFF33ff);
-            this.graphics.drawPolygon(this.bodyPolygon.points);
-              //  graphics.endFill();
-        }
+        this.position.x += this.speedX;
+		this.position.y += this.speed;
 
         this.absoluteBodyPoints = this.relativeBodyPoints.map(function(point) {
             return [ point[0] + self.x, point[1] + self.y ];

@@ -2,10 +2,13 @@ define( function( require ) {
 'use strict';
 
 	var Phaser = require( 'phaser' ),
-		$ = require( 'jquery' ),
 		FishSprite = require( 'sprites/fish' ),
 		WormSprite = require( 'sprites/worm' ),
-		Chest1Sprite = require( 'sprites/chest1' );
+		Chest1Sprite = require( 'sprites/chest1' ),
+		Chest3Sprite = require( 'sprites/chest3' ),
+		Stones1Sprite = require( 'sprites/stones1' ),
+		Stones2Sprite = require( 'sprites/stones2' ),
+		Stones3Sprite = require( 'sprites/stones3' );
 
 	function GameLoopState()
 	{
@@ -121,10 +124,23 @@ define( function( require ) {
 		item.inputEnabled = true;
 		item.events.onInputDown.add( function() { self.cursors.left.isDown = true; } );
 		item.events.onInputUp.add( function() { self.cursors.left.isDown = false; } );
-		item = this.game.add.sprite( 200, y, 'right_arrow' );		
-		item.inputEnabled = true;
-		item.events.onInputDown.add( function() { self.cursors.right.isDown = true; } );
-		item.events.onInputUp.add( function() { self.cursors.right.isDown = false; } );
+		var item2 = this.game.add.sprite( 200, y, 'right_arrow' );		
+		item2.inputEnabled = true;
+		item2.events.onInputDown.add( function() { self.cursors.right.isDown = true; } );
+		item2.events.onInputUp.add( function() { self.cursors.right.isDown = false; } );
+
+        var buttonGroup  = this.game.add.group();
+        buttonGroup.add(item);
+        buttonGroup.add(item2);
+
+        this.game.add.tween(buttonGroup).to(
+                { alpha: 0 },
+                /* duration */ 4000,
+                Phaser.Easing.Linear.None,
+                /* autostart */ true,
+                /* delay */ this.level === 1 ? 7000 : 2000,
+                /* repeat */ 0,
+                /* yoyo */ false);
 	};
 
 	GameLoopState.prototype.createStaticRandomItem = function() {
@@ -145,13 +161,8 @@ define( function( require ) {
 
 	GameLoopState.prototype.addRandomItem = function() {
 		var items = [
-            Chest1Sprite
-            /*{ type: 'chest', sprite: 'chest1' },/*
-
-            { type: 'chest', sprite: 'chest3' },
-            { type: 'stone', sprite: 'stones1' },
-            { type: 'stone', sprite: 'stones2' },
-            { type: 'stone', sprite: 'stones3' },*/
+            Chest1Sprite, Chest3Sprite,
+            Stones1Sprite, Stones2Sprite, Stones3Sprite
 		];
 		var randomItemType = items[ this.rnd.integerInRange( 0, items.length - 1 ) ];
         var item = new randomItemType(this.game, 0, 0);
@@ -164,6 +175,11 @@ define( function( require ) {
 		var imageInfo = this.game.cache.getImage( item.key );
         item.x = item.originalx = x;
         item.y = -imageInfo.height;
+        item.speed += this.rnd.frac() * this.level;
+        
+        if('speedX' in item) {
+            item.speedX = this.rnd.realInRange(-0.5, 0.5);
+        }
 
 		this.game.add.existing( item );
 		// Kill the item when it's no longer visible 
@@ -302,7 +318,7 @@ define( function( require ) {
 		}
 		if( item instanceof WormSprite ) {
 			this.score += 1;
-			this.energy += 10;
+			this.energy += 5;
             this.numWormsPickedUp++;
 		    item.kill();
 		} else {
@@ -311,6 +327,17 @@ define( function( require ) {
 
 		this.energy = Math.min( this.energy, 100 );
 	};
+
+    GameLoopState.prototype.drawSilhouette = function() {
+        if(this.graphics) {
+            this.graphics.x = this.x - ( this.width >> 1 );
+            this.graphics.y = this.y - ( this.height >> 1 );
+        } else {
+            this.graphics = this.game.add.graphics(this.x >> 1, this.y >> 1);
+            this.graphics.lineStyle(4, 0xff0000, 1);
+            this.graphics.drawPolygon(this.bodyPolygon.points);
+        }
+    };
 
 	return GameLoopState;
 });

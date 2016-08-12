@@ -2,7 +2,7 @@
 define( function( require ) {
 	'use strict';
 
-	var context = require( 'data/context' );
+	var PonupApi = require( 'ponupapi' );
 
 	function GameLostState() {
 	}
@@ -31,7 +31,8 @@ define( function( require ) {
 		this.headerSprite.strokeThickness = 6;
 		this.headerSprite.fill = '#43d637';
 
-		context.ponupApi.saveScore( 'salmon', {
+        var ponupApi = new PonupApi();
+		ponupApi.saveScore( 'salmon', {
 			'game_level_number': this.gameData.level,
 			'player_name': 'Anonymous',
 			'value': this.gameData.score

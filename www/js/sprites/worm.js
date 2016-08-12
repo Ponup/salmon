@@ -8,6 +8,7 @@ define( function( require ) {
 	
 		this.originalx = x;
 		this.tick = 0;
+        this.speed = 1;
 	}
 
 	WormSprite.prototype = Object.create( Phaser.Sprite.prototype );
@@ -18,7 +19,7 @@ define( function( require ) {
 		var deg = this.tick++ % 360,
 			rad =  deg / 180 * Math.PI;
 		this.position.x = this.originalx + ( Math.sin( rad ) * 40 );
-		this.position.y++;
+		this.position.y += this.speed;
 	};
 
 	return WormSprite;

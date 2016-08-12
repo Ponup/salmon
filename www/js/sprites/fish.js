@@ -7,13 +7,11 @@ define( function( require ) {
 	{
 		Phaser.Sprite.call( this, game, game.world.centerX, game.world.height - 90, 'fish', 0 );
 
-		this.animations.add( 'left', [ 3, 2, 1, 0,1,2,3 ], 8,  false );
-		this.animations.add( 'idle', [ 9,10,11,12 ], 8,  true );
-		this.animations.add( 'right',[ 5, 6 ,7 , 8 ,7,6,5], 8,  false );
-		//this.anchor.set( .5, .5 );
-		this.reset( game.world.centerX, game.world.height - 100 );
-		//this.body.collideWorldBounds = true;
-		//this.body.fixedRotation = true;
+		this.animations.add( 'left', [ 3, 2, 1, 0, 1, 2, 3 ], 8,  false );
+		this.animations.add( 'idle', [ 9, 10, 11, 12 ], 8,  true );
+		this.animations.add( 'right',[ 5, 6, 7, 8, 7, 6, 5 ], 8,  false );
+		this.anchor.set( 0.5, 0.5 );
+		this.reset( game.world.centerX, game.world.height - 70 );
 
         this.relativeBodyPoints= [
             [ 35, 8 ],
@@ -37,17 +35,12 @@ define( function( require ) {
 		var leftOrRight = false;
         var self = this;
 
-        if(this.graphics) {
-            this.graphics.x = this.x;
-            this.graphics.y = this.y;
-        } else {
-            this.graphics = this.game.add.graphics(this.x, this.y);
-            this.graphics.lineStyle(4, 0xff0000, 1);
-            this.graphics.drawPolygon(this.bodyPolygon.points);
+        if(this.debugEnabled) {
+            this.drawSilhouette();
         }
 
         this.absoluteBodyPoints = this.relativeBodyPoints.map(function(point) {
-            return [ point[0] + self.x, point[1] + self.y ];
+            return [ point[0] + self.x - ( self.width >> 1 ), point[1] + self.y - ( self.height >> 1 ) ];
         });
 
 		if (cursors.left.isDown) {
@@ -62,15 +55,6 @@ define( function( require ) {
 		}
 		if( false === leftOrRight ) {
 			this.animations.play( 'idle' );
-		}
-
-		if (cursors.up.isDown) {
-			// remove temporally the up and down movement
-			// this.body.y -= 5;
-		}
-		else if (cursors.down.isDown) {
-			// remove temporally the up and down movement
-			// this.body.y += 10;
 		}
 	};
 

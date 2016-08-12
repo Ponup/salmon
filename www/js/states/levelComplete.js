@@ -11,6 +11,10 @@ define( function( require ) {
 	LevelCompleteState.prototype.init = function(args) {
         this.args = args;
     };
+	
+    LevelCompleteState.prototype.preload = function() {
+        this.game.load.image('starfish', 'img/starfish.png'); 
+    };
 
 	LevelCompleteState.prototype.create = function() {
 		var self = this;
@@ -32,7 +36,11 @@ define( function( require ) {
 		text.strokeThickness = 6;
 		text.fill = '#43d637';
 
-		setTimeout( function() { self.game.state.start( 'gameLoop', true, false, self.args ); }, 2000 );
+        var emitter = this.game.add.emitter(this.game.world.centerX, 5, 50);
+        emitter.makeParticles(['starfish']);
+        emitter.start(/* burst */ false, /* lifespan */ 4000, 200);
+
+		setTimeout( function() { self.game.state.start( 'gameLoop', true, false, self.args ); }, 4000 );
 	};
 
 	LevelCompleteState.prototype.update = function() {

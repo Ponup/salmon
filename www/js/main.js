@@ -2,23 +2,21 @@
 require.config({
 	baseUrl: 'js/',
 	paths: {
-		jquery: '../bower_components/jquery/dist/jquery.min',
+        jquery: '../bower_components/jquery/dist/jquery.min',
 		underscore: '../bower_components/underscore/underscore-min',
-		handlebars: 'handlebars-v2.0.0',
 		phaser: '../bower_components/phaser/build/phaser.min',
 		ponupapi: '../bower_components/ponup-api-js/api'
 	},
-        shim: {
-        	'phaser': {
-        		exports: 'Phaser'
-        	}
-        },
+    shim: {
+        'phaser': {
+        	exports: 'Phaser'
+        }
+    },
 	urlArgs: 'bust=' + Date.now()
 });
 
 define( function( require ) {
 	var context = require( 'data/context' ),
-		PonupApi = require( 'ponupapi' ),
 		Phaser = require( 'phaser' ),
 		MainMenuState = require( 'states/mainMenu' ),
 		GameLoopState = require( 'states/gameLoop' ),
@@ -43,9 +41,6 @@ define( function( require ) {
 		context.game.state.start( 'mainMenu' );
 	};
 
-	context.ponupApi = new PonupApi();
-	// context.ponupApi.setBaseUrl( 'http://localhost:8080' );
-	
 	document.addEventListener( 'deviceready', function() {	
 
 		context.game = new Phaser.Game( 320, 480, Phaser.AUTO, 'gameDiv', { preload: preload, create: create } );
