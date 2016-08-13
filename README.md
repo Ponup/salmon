@@ -1,6 +1,7 @@
 
 HTML5 game written with the following libraries and tools:
 
+* gulpjs
 * RequireJS
 * Jquery
 * Phaser

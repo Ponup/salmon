@@ -7,3 +7,6 @@ nbproject
 www/bower_components
 *.keystore
 build.json
+bower_components/
+node_modules/
+www/js/vendor/

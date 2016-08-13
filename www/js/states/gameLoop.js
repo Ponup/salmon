@@ -182,12 +182,11 @@ define( function( require ) {
         }
 
 		this.game.add.existing( item );
+
 		// Kill the item when it's no longer visible 
 		item.checkWorldBounds = true;
-		item.outOfBoundsKill = true;
 		item.events.onOutOfBounds.add( function( item ) {
-			item.kill();
-		//	item.destroy();
+		    item.destroy();
 		}, item );
 
 		this.fgItems.push( item );
@@ -204,7 +203,9 @@ define( function( require ) {
 		for( var i = 0; i < this.fgItems.length; i++ ) {
 			var item = this.fgItems[i];
             item.y++;
-			this.blockHit(this.fish, item);
+            if(item.visible) {
+			    this.blockHit(this.fish, item);
+            }
 		}
 
         var gameData = { score: this.score, level: this.level };
@@ -262,7 +263,6 @@ define( function( require ) {
 		}
 		this.bgItems = this.bgItems.filter( function( sprite ) {
 			if( sprite.y > 480 ) { // self.game.stage.height
-				sprite.kill();
 				sprite.destroy();
 				return false;
 			}
@@ -272,7 +272,6 @@ define( function( require ) {
 
 	GameLoopState.prototype.destroyAllItems = function() {
         this.fgItems.forEach(function(item) {
-            item.kill();
             item.destroy();
         });
         this.fgItems = [];

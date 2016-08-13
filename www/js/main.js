@@ -2,10 +2,10 @@
 require.config({
 	baseUrl: 'js/',
 	paths: {
-        jquery: '../bower_components/jquery/dist/jquery.min',
-		underscore: '../bower_components/underscore/underscore-min',
-		phaser: '../bower_components/phaser/build/phaser.min',
-		ponupapi: '../bower_components/ponup-api-js/api'
+        jquery: 'vendor/jquery',
+		underscore: 'vendor/underscore',
+		phaser: 'vendor/phaser',
+		ponupapi: 'vendor/api'
 	},
     shim: {
         'phaser': {
