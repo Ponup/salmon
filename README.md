@@ -13,3 +13,12 @@ HTML5 game written with the following libraries and tools:
   * org.apache.cordova.file
   * org.apache.cordova.media
 
+
+
+```
+npm install gulp
+npm install main-bower-files
+bower install
+cordova platform add browser
+cordova run browser
+```

@@ -10,3 +10,4 @@ build.json
 bower_components/
 node_modules/
 www/js/vendor/
+platform

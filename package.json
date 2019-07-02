@@ -4,6 +4,15 @@
   "description": "",
   "main": "",
   "dependencies": {
+    "cordova-android": "~5.2.1",
+    "cordova-browser": "^5.0.1",
+    "cordova-plugin-compat": "^1.2.0",
+    "cordova-plugin-device": "^1.1.7",
+    "cordova-plugin-file": "^4.3.3",
+    "cordova-plugin-media": "^2.3.0",
+    "cordova-plugin-whitelist": "^1.2.2",
+    "cordova-plugin-x-socialsharing": "^5.1.8",
+    "es6-promise-plugin": "^4.2.2",
     "gulp": "^3.9.1"
   },
   "devDependencies": {
@@ -20,5 +29,18 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Ponup/salmon/issues"
+  },
+  "cordova": {
+    "platforms": [
+      "android",
+      "browser"
+    ],
+    "plugins": {
+      "cordova-plugin-x-socialsharing": {},
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-media": {},
+      "cordova-plugin-file": {}
+    }
   }
 }
